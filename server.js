@@ -12,6 +12,28 @@ http.createServer(function trataPedidos(request, resposta){
 
 var server = express()
 
+
+
+//Plugin do express
+server.use(express.urlencoded())
+server.use(express.json())
+
+// var queryStrig = require('query-string')
+
+// server.use(function (request, resposta, next){
+//         request.body = ""
+
+//         request.on("data",function(tecoBody){
+//             request.body += tecoBody.toString();
+//         })
+
+//         request.on("end", function(){
+//             console.log("Criou o body")
+//             request.body = queryStrig.parse(request.body)
+//             next()
+//         })
+//     })
+
 server.get("/", function trataPedidos(request, resposta){
     resposta.render("index.ejs")
 })
