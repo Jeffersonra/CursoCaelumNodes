@@ -44,4 +44,17 @@ require("./routes/produtos")(server)
 
 server.use(express.static("./static"))
 
+server.use(function(request,resposta){
+    resposta.status(404).render("erros/erro.ejs", {
+        erro: "Se é Burro!?! -- 404 - Not Found"
+    })
+})
+
+server.use(function(erro, request,resposta,next){
+    resposta.format({
+        html: () => resposta.status(500).render("erros/erro.ejs",{erro: erro})
+        ,json: () => resposta.status(500).send(erro.message)
+    })
+})
+
 module.exports = server

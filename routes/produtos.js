@@ -1,6 +1,6 @@
 //Singleton
 var createConnection = require("../DB/connectionFactory")
-var LivrosDAO = require("../DB/LivrosDAO")
+var LivrosDAO = require("../DB/LivroDAOClasse")
 
 
 //#region  
@@ -32,26 +32,29 @@ var LivrosDAO = require("../DB/LivrosDAO")
 //Await metodo async 
 module.exports = function (server){  
     //Lista Produtos     
-    server.get("/produtos", async function (request, resposta){
+    server.get("/produtos", async function (request, resposta, next){
         try{
                 var conexao = await createConnection.getConnection()
                 var livrosDAO = new  LivrosDAO(conexao)
                 var livros = await livrosDAO.lista()
 
-                resposta.render("produtos/lista.ejs", { 
-                                livros: livros  })
+                resposta.format({
+                    html: () => resposta.render("produtos/lista.ejs", {livros: livros})
+                    ,json: () => resposta.send({livros: livros})
+                })
+
         }
         catch(err){
-            resposta.send(err.message)
+            next(err)
         }
     })
 
     //Novos Produtos
     server.get("/produtos/form", function (request, resposta){
-                resposta.render("produtos/form.ejs", {validationErrors:[] })
+                resposta.status(400).render("produtos/form.ejs", {validationErrors:[] })
         })
 
-    server.post("/produtos", async function (request, resposta){
+    server.post("/produtos", async function (request, resposta, next){
             var livro = request.body;
 
             request.assert("titulo", "Titulo Invalido").notEmpty()
@@ -69,12 +72,12 @@ module.exports = function (server){
 
                     resposta.redirect("/produtos")
                 }catch(erroDB){
-                    resposta.send(erroDB)
+                    next(erroDB)
                 }
 
                 
             }catch(validationErrors){
-                resposta.render("produtos/form.ejs", {validationErrors})
+                resposta.status(400).render("produtos/form.ejs", {validationErrors})
             }
         })
 }
