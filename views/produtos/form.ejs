@@ -5,7 +5,9 @@
         <h2 class="basic-title">Add</h2>
 
         <% validationErrors.forEach((err) => { %>
-          <%= err.msg %>
+            <div class="alert alert-danger">
+                <%= err.msg %>
+            </div>
         <% }) %>
 
         <form action="/produtos" method="post" class="well" role="form">

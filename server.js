@@ -13,8 +13,9 @@ http.createServer(function trataPedidos(request, resposta){
 var server = express()
 
 
-
+var expressValidator = require("express-validator")
 //Plugin do express
+server.use(expressValidator())
 server.use(express.urlencoded())
 server.use(express.json())
 
